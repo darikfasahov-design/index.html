@@ -2,174 +2,56 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ШЕПОТ В ТЕМНОТЕ | Психологический хоррор-квест</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ТЕСТОВАЯ ИГРА - ПРОВЕРКА ДВИЖЕНИЯ</title>
     <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            font-family: 'Courier New', monospace;
-        }
-        #ui {
+        body { margin: 0; overflow: hidden; font-family: monospace; }
+        #info {
             position: absolute;
             top: 20px;
             left: 20px;
+            background: black;
+            color: lime;
+            padding: 10px;
+            border-radius: 5px;
             z-index: 100;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            border-radius: 8px;
-            padding: 12px 20px;
-            border-left: 4px solid #aa0000;
-            color: #ff6666;
-            font-weight: bold;
-            font-family: monospace;
-            pointer-events: none;
             font-size: 14px;
         }
-        #objective {
+        #controls {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            padding: 12px 18px;
-            border-radius: 8px;
-            border-right: 3px solid #ff5555;
-            color: #ffaaaa;
-            font-family: monospace;
-            font-size: 13px;
-            text-align: right;
-            pointer-events: none;
+            bottom: 20px;
+            left: 20px;
+            background: black;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
             z-index: 100;
-            backdrop-filter: blur(8px);
-        }
-        #objective span {
-            color: #ffaa44;
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 12px;
         }
         #crosshair {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 14px;
-            height: 14px;
+            width: 20px;
+            height: 20px;
             transform: translate(-50%, -50%);
-            border: 2px solid rgba(255, 80, 80, 0.8);
-            border-radius: 2px;
+            border: 2px solid red;
+            border-radius: 50%;
             pointer-events: none;
             z-index: 200;
-            box-shadow: 0 0 6px red;
-        }
-        #message-area {
-            position: absolute;
-            bottom: 20%;
-            left: 10%;
-            right: 10%;
-            text-align: center;
-            background: rgba(0,0,0,0.9);
-            color: #ff8888;
-            padding: 20px;
-            font-family: monospace;
-            font-size: 1.2rem;
-            font-weight: bold;
-            pointer-events: none;
-            z-index: 150;
-            transition: 0.3s;
-            backdrop-filter: blur(16px);
-            border: 1px solid #ff3333;
-            border-radius: 12px;
-            letter-spacing: 1px;
-        }
-        #controls-hint {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            background: rgba(0,0,0,0.7);
-            padding: 6px 12px;
-            border-radius: 20px;
-            color: #aaa;
-            font-size: 10px;
-            font-family: monospace;
-            pointer-events: none;
-            z-index: 100;
-        }
-        #sanity-bar {
-            position: absolute;
-            bottom: 30px;
-            left: 20px;
-            width: 220px;
-            height: 6px;
-            background: #331133;
-            border-radius: 3px;
-            overflow: hidden;
-            z-index: 100;
-            border: 1px solid #883388;
-        }
-        #sanity-fill {
-            width: 100%;
-            height: 100%;
-            background: #cc44cc;
-            transition: width 0.2s;
-        }
-        .sanity-label {
-            position: absolute;
-            bottom: 42px;
-            left: 20px;
-            color: #cc88cc;
-            font-size: 9px;
-            font-family: monospace;
-            pointer-events: none;
-            z-index: 100;
-        }
-        button {
-            position: absolute;
-            bottom: 30px;
-            right: 20px;
-            background: #1a1a2a;
-            border: 1px solid #884488;
-            padding: 10px 20px;
-            color: #dd88dd;
-            font-family: monospace;
-            font-weight: bold;
-            cursor: pointer;
-            z-index: 200;
-            border-radius: 6px;
-            transition: 0.2s;
-        }
-        button:hover {
-            background: #883388;
-            color: white;
-        }
-        @keyframes heartbeat {
-            0% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 0.3; }
-        }
-        .heartbeat {
-            animation: heartbeat 0.5s ease-in-out 3;
-        }
-        @keyframes vignette {
-            0% { box-shadow: inset 0 0 0px rgba(0,0,0,0); }
-            100% { box-shadow: inset 0 0 60px rgba(0,0,0,0.8); }
-        }
-        .vignette {
-            animation: vignette 0.3s forwards;
         }
     </style>
 </head>
 <body>
-    <div id="ui">👁️ [ШЕПОТ УСИЛИВАЕТСЯ] ██████░░ 62%</div>
-    <div id="objective">
-        📜 РАССЛЕДОВАНИЕ<br>
-        Найти улики: <span id="foundClues">0</span> / 6<br>
-        🔍 <span id="clueHint">Осмотрите комнату</span>
+    <div id="info">
+        🎮 СТАТУС: <span id="status">Ожидание клика</span><br>
+        📍 ПОЗИЦИЯ: <span id="pos">0, 0, 0</span>
+    </div>
+    <div id="controls">
+        🖱️ КЛИКНИТЕ ПО ЭКРАНУ → ДВИГАЙТЕСЬ (W/A/S/D)<br>
+        🖱️ МЫШЬ = поворот камеры | ESC = освободить мышь
     </div>
     <div id="crosshair"></div>
-    <div id="message-area" style="opacity:0; visibility:hidden;"></div>
-    <div id="controls-hint">🖱️ Мышь: осмотр | W/A/S/D: движение | SHIFT: бег | [E] - взаимодействие</div>
-    <div class="sanity-label">РАССУДОК</div>
-    <div id="sanity-bar"><div id="sanity-fill" style="width: 100%;"></div></div>
-    <button id="resetBtn">🔄 НАЧАТЬ ЗАНОВО</button>
 
     <script type="importmap">
         {
@@ -183,336 +65,163 @@
     <script type="module">
         import * as THREE from 'three';
         import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
-        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-        // --- НОВАЯ СЦЕНА: ЗАБРОШЕННЫЙ ОСОБНЯК ---
+        // --- ПРОСТАЯ СЦЕНА ДЛЯ ТЕСТА ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x030318);
-        scene.fog = new THREE.FogExp2(0x030318, 0.02);
+        scene.background = new THREE.Color(0x111122);
+        scene.fog = new THREE.Fog(0x111122, 10, 30);
         
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.05, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true;
         document.body.appendChild(renderer.domElement);
-        
-        const labelRenderer = new CSS2DRenderer();
-        labelRenderer.setSize(window.innerWidth, window.innerHeight);
-        labelRenderer.domElement.style.position = 'absolute';
-        labelRenderer.domElement.style.top = '0px';
-        labelRenderer.domElement.style.left = '0px';
-        labelRenderer.domElement.style.pointerEvents = 'none';
-        document.body.appendChild(labelRenderer.domElement);
         
         // --- УПРАВЛЕНИЕ ---
         const controls = new PointerLockControls(camera, document.body);
+        
+        // Экран блокировки
         const blocker = document.createElement('div');
-        blocker.style.cssText = `
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, #110011, #000000);
-            z-index: 1000; display: flex; justify-content: center; align-items: center;
-            font-family: monospace; color: #aa44aa; font-size: 28px; flex-direction: column;
-            cursor: pointer; text-align: center;
-        `;
-        blocker.innerHTML = '🔮 КЛИКНИТЕ, ЧТОБЫ ВОЙТИ 🔮<br><span style="font-size:14px; margin-top:20px;">(Шёпот ждёт вас...)</span>';
+        blocker.style.position = 'absolute';
+        blocker.style.top = '0';
+        blocker.style.left = '0';
+        blocker.style.width = '100%';
+        blocker.style.height = '100%';
+        blocker.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        blocker.style.display = 'flex';
+        blocker.style.justifyContent = 'center';
+        blocker.style.alignItems = 'center';
+        blocker.style.flexDirection = 'column';
+        blocker.style.zIndex = '1000';
+        blocker.style.cursor = 'pointer';
+        blocker.style.fontFamily = 'monospace';
+        blocker.style.fontSize = '24px';
+        blocker.style.color = '#ff6666';
+        blocker.innerHTML = '🔴 КЛИКНИТЕ СЮДА, ЧТОБЫ НАЧАТЬ 🔴<br><span style="font-size:14px; margin-top:20px;">(После клика курсор исчезнет)</span>';
         document.body.appendChild(blocker);
         
-        controls.getObject().position.set(0, 0.85, 0);
+        // Позиция игрока
+        controls.getObject().position.set(0, 0.8, 0);
         scene.add(controls.getObject());
         
-        controls.addEventListener('lock', () => { blocker.style.display = 'none'; });
-        controls.addEventListener('unlock', () => { blocker.style.display = 'flex'; });
-        blocker.addEventListener('click', () => controls.lock());
+        // События блокировки
+        controls.addEventListener('lock', () => {
+            blocker.style.display = 'none';
+            document.getElementById('status').textContent = 'ИГРА АКТИВНА - ДВИГАЙТЕСЬ!';
+            document.getElementById('status').style.color = '#00ff00';
+        });
         
-        // --- ОСВЕЩЕНИЕ (МИСТИЧЕСКОЕ)---
-        const ambient = new THREE.AmbientLight(0x111122);
-        scene.add(ambient);
-        const torchLight = new THREE.PointLight(0xff8844, 0.9, 15);
-        torchLight.position.set(0, 1.5, 0);
-        scene.add(torchLight);
-        const blueLight = new THREE.PointLight(0x2266ff, 0.4);
-        blueLight.position.set(2, 1, -3);
-        scene.add(blueLight);
+        controls.addEventListener('unlock', () => {
+            blocker.style.display = 'flex';
+            document.getElementById('status').textContent = 'Ожидание клика';
+            document.getElementById('status').style.color = '#ff6666';
+        });
         
-        // --- КОМНАТЫ И КОЛЛИЗИИ ---
-        const walls = [];
-        function addWall(x, z, w, h, d, color = 0x2a1a2a) {
-            const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.6 });
-            const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
-            wall.position.set(x, h/2, z);
-            wall.castShadow = true;
-            scene.add(wall);
-            walls.push({ minX: x - w/2, maxX: x + w/2, minZ: z - d/2, maxZ: z + d/2 });
-        }
+        // Клик для старта
+        blocker.addEventListener('click', () => {
+            controls.lock();
+        });
         
-        // Основные стены
-        addWall(0, -9, 20, 3, 1);
-        addWall(0, 9, 20, 3, 1);
-        addWall(-10, 0, 1, 3, 20);
-        addWall(10, 0, 1, 3, 20);
-        // Перегородки
-        addWall(-4, -3, 1, 2.2, 4, 0x3a2a3a);
-        addWall(3, -2, 1, 2.2, 5, 0x3a2a3a);
-        addWall(-2, 3, 5, 2.2, 1, 0x3a2a3a);
-        addWall(5, 2, 1, 2.2, 4, 0x3a2a3a);
-        addWall(-5, 5, 1, 2.2, 3, 0x3a2a3a);
-        addWall(0, -6, 3, 2.2, 1, 0x3a2a3a);
+        // --- ПРОСТАЯ АРЕНА (пол и стены)---
+        // Пол
+        const gridHelper = new THREE.GridHelper(20, 20, 0x00ff00, 0x444444);
+        gridHelper.position.y = -0.5;
+        scene.add(gridHelper);
         
-        // Пол (деревянный)
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0x2a1a1a, roughness: 0.9 });
-        const floor = new THREE.Mesh(new THREE.PlaneGeometry(20, 20), floorMat);
-        floor.rotation.x = -Math.PI/2;
-        floor.position.y = -0.1;
+        const floor = new THREE.Mesh(
+            new THREE.PlaneGeometry(20, 20),
+            new THREE.MeshStandardMaterial({ color: 0x224422, side: THREE.DoubleSide })
+        );
+        floor.rotation.x = -Math.PI / 2;
+        floor.position.y = -0.5;
         floor.receiveShadow = true;
         scene.add(floor);
         
-        // Декорации: свечи, статуи
-        const candleMat = new THREE.MeshStandardMaterial({ color: 0xccaa88, emissive: 0x442200 });
-        for(let i = 0; i < 20; i++) {
-            const x = (Math.random() - 0.5) * 14;
-            const z = (Math.random() - 0.5) * 14;
-            if(Math.abs(x) < 2 && Math.abs(z) < 2) continue;
-            const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.25, 0.6, 6), candleMat);
-            candle.position.set(x, 0.2, z);
-            candle.castShadow = true;
-            scene.add(candle);
+        // Стены для ориентира
+        const wallMat = new THREE.MeshStandardMaterial({ color: 0x884444 });
+        const walls = [
+            { pos: [0, 1, -8], scale: [16, 2, 0.5] },
+            { pos: [0, 1, 8], scale: [16, 2, 0.5] },
+            { pos: [-8, 1, 0], scale: [0.5, 2, 16] },
+            { pos: [8, 1, 0], scale: [0.5, 2, 16] }
+        ];
+        walls.forEach(w => {
+            const wall = new THREE.Mesh(new THREE.BoxGeometry(w.scale[0], w.scale[1], w.scale[2]), wallMat);
+            wall.position.set(w.pos[0], w.pos[1], w.pos[2]);
+            wall.castShadow = true;
+            scene.add(wall);
+        });
+        
+        // Несколько цветных кубов для ориентира
+        const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff];
+        for(let i = 0; i < 5; i++) {
+            const cube = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.5, 0.5), new THREE.MeshStandardMaterial({ color: colors[i] }));
+            cube.position.set(-5 + i * 2.5, 0, -3);
+            cube.castShadow = true;
+            scene.add(cube);
         }
         
-        // --- ПРИЗРАК (НОВЫЙ МОНСТР)---
-        const ghost = new THREE.Group();
-        const ghostBody = new THREE.Mesh(new THREE.SphereGeometry(0.5, 24, 24), 
-            new THREE.MeshStandardMaterial({ color: 0x8866aa, emissive: 0x442266, emissiveIntensity: 0.6, transparent: true, opacity: 0.85 }));
-        ghost.add(ghostBody);
-        const ghostEye = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), 
-            new THREE.MeshStandardMaterial({ color: 0xff88ff, emissive: 0xff44ff }));
-        ghostEye.position.set(0.25, 0.2, 0.5);
-        ghost.add(ghostEye);
-        const ghostEye2 = new THREE.Mesh(new THREE.SphereGeometry(0.15, 16, 16), 
-            new THREE.MeshStandardMaterial({ color: 0xff88ff, emissive: 0xff44ff }));
-        ghostEye2.position.set(-0.25, 0.2, 0.5);
-        ghost.add(ghostEye2);
-        ghost.position.set(6, 0.4, 5);
-        scene.add(ghost);
+        // Освещение
+        const ambient = new THREE.AmbientLight(0x333333);
+        scene.add(ambient);
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 10, 5);
+        light.castShadow = true;
+        scene.add(light);
+        const fillLight = new THREE.PointLight(0x2266ff, 0.5);
+        fillLight.position.set(0, 2, 0);
+        scene.add(fillLight);
         
-        // --- УЛИКИ (6 штук)---
-        let clues = [];
-        let foundClues = 0;
-        let sanity = 100;
-        let gameActive = true;
-        let ghostNear = false;
-        let messageTimeout = null;
+        // --- УПРАВЛЕНИЕ (ПРОСТЕЙШЕЕ)---
+        const keyState = { w: false, s: false, a: false, d: false };
         
-        function createClue(x, z, name, hint) {
-            const group = new THREE.Group();
-            const box = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.1, 0.4), 
-                new THREE.MeshStandardMaterial({ color: 0xccaa88, emissive: 0x442200 }));
-            group.add(box);
-            group.position.set(x, 0.1, z);
-            scene.add(group);
-            
-            const div = document.createElement('div');
-            div.textContent = `📌 ${name}`;
-            div.style.backgroundColor = 'rgba(0,0,0,0.8)';
-            div.style.color = '#ffccaa';
-            div.style.padding = '4px 10px';
-            div.style.borderRadius = '20px';
-            div.style.fontSize = '10px';
-            div.style.borderLeft = '3px solid #ff8844';
-            div.style.fontFamily = 'monospace';
-            const label = new CSS2DObject(div);
-            label.position.set(x, 0.45, z);
-            scene.add(label);
-            
-            clues.push({ group, label, name, hint, taken: false });
-        }
-        
-        // Размещаем улики
-        createClue(-3.5, -2, "Старый дневник", "Записи о странных событиях...");
-        createClue(4, -1.5, "Сломанные часы", "Остановились ровно в полночь");
-        createClue(-2, 4, "Фотография", "Размытое лицо на заднем плане");
-        createClue(3.5, 3, "Свеча", "Ещё теплая, кто-то был здесь");
-        createClue(-4, -4, "Кровавое письмо", "Не разобрать текст");
-        createClue(0, 5, "Статуэтка", "Глаза следуют за тобой");
-        
-        function updateUI() {
-            document.getElementById('foundClues').textContent = foundClues;
-            document.getElementById('sanity-fill').style.width = Math.max(0, sanity) + '%';
-            
-            if(foundClues === 6 && gameActive) {
-                gameActive = false;
-                showMessage('✨ ВЫ РАСКРЫЛИ ТАЙНУ ОСОБНЯКА! ПОБЕДА! ✨', false);
-                if(controls.isLocked) controls.unlock();
-            }
-            
-            if(sanity <= 0 && gameActive) {
-                gameActive = false;
-                showMessage('💀 ВАШ РАССУДОК РУХНУЛ... ТЕНЬ ПОГЛОТИЛА ВАС 💀', true);
-                if(controls.isLocked) controls.unlock();
-            }
-            
-            // Подсказка в углу
-            const hintSpan = document.getElementById('clueHint');
-            if(foundClues < 3) hintSpan.innerHTML = "Осмотрите комнату";
-            else if(foundClues < 5) hintSpan.innerHTML = "Шёпот усиливается...";
-            else hintSpan.innerHTML = "Осталось последнее доказательство!";
-        }
-        
-        function showMessage(msg, isDanger = false) {
-            if(messageTimeout) clearTimeout(messageTimeout);
-            const msgDiv = document.getElementById('message-area');
-            msgDiv.style.visibility = 'visible';
-            msgDiv.style.opacity = '1';
-            msgDiv.innerHTML = msg;
-            msgDiv.style.color = isDanger ? '#ff5555' : '#ffaa88';
-            msgDiv.style.border = isDanger ? '2px solid #ff3333' : '1px solid #ff8844';
-            messageTimeout = setTimeout(() => {
-                msgDiv.style.opacity = '0';
-                setTimeout(() => msgDiv.style.visibility = 'hidden', 500);
-            }, 3000);
-        }
-        
-        // --- КОЛЛИЗИЯ ---
-        function checkCollision(pos) {
-            for(let w of walls) {
-                if(pos.x + 0.3 > w.minX && pos.x - 0.3 < w.maxX &&
-                   pos.z + 0.3 > w.minZ && pos.z - 0.3 < w.maxZ) return true;
-            }
-            return false;
-        }
-        
-        // --- ДВИЖЕНИЕ ---
-        const keys = { w: false, s: false, a: false, d: false, shift: false };
         window.addEventListener('keydown', (e) => {
-            const k = e.key.toLowerCase();
-            if(k === 'w') keys.w = true;
-            if(k === 's') keys.s = true;
-            if(k === 'a') keys.a = true;
-            if(k === 'd') keys.d = true;
-            if(k === 'shift') keys.shift = true;
-            if(k === 'e') {
-                e.preventDefault();
-                const playerPos = controls.getObject().position;
-                for(let i = 0; i < clues.length; i++) {
-                    if(!clues[i].taken && playerPos.distanceTo(clues[i].group.position) < 1.2) {
-                        clues[i].taken = true;
-                        scene.remove(clues[i].group);
-                        scene.remove(clues[i].label);
-                        foundClues++;
-                        updateUI();
-                        showMessage(`🔍 Найдено: ${clues[i].name}\n"${clues[i].hint}"`, false);
-                        break;
-                    }
-                }
-            }
-            if(k === 'escape' && controls.isLocked) controls.unlock();
+            const key = e.key.toLowerCase();
+            if(key === 'w') keyState.w = true;
+            if(key === 's') keyState.s = true;
+            if(key === 'a') keyState.a = true;
+            if(key === 'd') keyState.d = true;
+            if(key === 'escape' && controls.isLocked) controls.unlock();
+            e.preventDefault();
         });
         
         window.addEventListener('keyup', (e) => {
-            const k = e.key.toLowerCase();
-            if(k === 'w') keys.w = false;
-            if(k === 's') keys.s = false;
-            if(k === 'a') keys.a = false;
-            if(k === 'd') keys.d = false;
-            if(k === 'shift') keys.shift = false;
+            const key = e.key.toLowerCase();
+            if(key === 'w') keyState.w = false;
+            if(key === 's') keyState.s = false;
+            if(key === 'a') keyState.a = false;
+            if(key === 'd') keyState.d = false;
         });
         
+        let moveSpeed = 5.0;
+        
         function updateMovement(delta) {
-            if(!controls.isLocked || !gameActive) return;
-            let speed = (keys.shift ? 4.2 : 2.6) * delta;
+            if(!controls.isLocked) return;
+            
+            const actualSpeed = moveSpeed * delta;
             const forward = controls.getDirection(new THREE.Vector3());
-            const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0), forward);
+            const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0, 1, 0), forward);
+            
             let move = new THREE.Vector3();
-            if(keys.w) move.add(forward);
-            if(keys.s) move.sub(forward);
-            if(keys.d) move.add(right);
-            if(keys.a) move.sub(right);
+            if(keyState.w) move.add(forward);
+            if(keyState.s) move.sub(forward);
+            if(keyState.d) move.add(right);
+            if(keyState.a) move.sub(right);
             move.y = 0;
+            
             if(move.length() > 0) move.normalize();
             
-            let newPos = controls.getObject().position.clone();
-            newPos.x += move.x * speed;
-            newPos.z += move.z * speed;
-            if(!checkCollision(newPos)) {
-                controls.getObject().position.copy(newPos);
-            } else {
-                let tryX = controls.getObject().position.clone();
-                tryX.x += move.x * speed;
-                if(!checkCollision(tryX)) controls.getObject().position.x = tryX.x;
-                let tryZ = controls.getObject().position.clone();
-                tryZ.z += move.z * speed;
-                if(!checkCollision(tryZ)) controls.getObject().position.z = tryZ.z;
-            }
+            controls.getObject().position.x += move.x * actualSpeed;
+            controls.getObject().position.z += move.z * actualSpeed;
+            
+            // Ограничение арены
+            const limit = 7;
+            controls.getObject().position.x = Math.min(limit, Math.max(-limit, controls.getObject().position.x));
+            controls.getObject().position.z = Math.min(limit, Math.max(-limit, controls.getObject().position.z));
+            
+            // Обновление UI
+            const pos = controls.getObject().position;
+            document.getElementById('pos').textContent = `${pos.x.toFixed(2)}, ${pos.y.toFixed(2)}, ${pos.z.toFixed(2)}`;
         }
-        
-        // --- ПРИЗРАК И СТРАХ ---
-        let ghostSpeed = 0.9;
-        let lastDamageTime = 0;
-        
-        function updateGhost(delta) {
-            if(!gameActive) return;
-            const playerPos = controls.getObject().position;
-            const toPlayer = new THREE.Vector3().subVectors(playerPos, ghost.position);
-            const dist = toPlayer.length();
-            
-            // Призрак медленно приближается
-            if(dist > 1.2) {
-                const dir = toPlayer.clone().normalize();
-                ghost.position.x += dir.x * ghostSpeed * delta;
-                ghost.position.z += dir.z * ghostSpeed * delta;
-            }
-            ghost.lookAt(playerPos);
-            
-            // Эффект близости призрака
-            ghostNear = dist < 2.5;
-            if(ghostNear) {
-                sanity -= delta * 8;
-                updateUI();
-                torchLight.intensity = 0.6 + Math.random() * 0.5;
-                document.body.classList.add('heartbeat');
-                setTimeout(() => document.body.classList.remove('heartbeat'), 500);
-            }
-            
-            // Атака
-            if(dist < 1.3 && gameActive && (Date.now() - lastDamageTime) > 1500) {
-                sanity -= 22;
-                updateUI();
-                showMessage('👻 ПРИЗРАК КОСНУЛСЯ ТЕБЯ! РАССУДОК ТЕРЯЕТСЯ... 👻', true);
-                const pushDir = toPlayer.clone().normalize();
-                controls.getObject().position.x += pushDir.x * 1.5;
-                controls.getObject().position.z += pushDir.z * 1.5;
-                lastDamageTime = Date.now();
-            }
-            
-            // Мерцание света от призрака
-            blueLight.intensity = 0.3 + Math.sin(Date.now() * 0.01) * 0.2;
-            
-            // Эффект шёпота
-            if(ghostNear && Math.random() < 0.02) {
-                const whispers = ["Ты здесь...", "Останься...", "Не уходи...", "Мы ждали тебя...", "Темнота зовёт..."];
-                showMessage(`👁️ Шёпот: "${whispers[Math.floor(Math.random() * whispers.length)]}"`, false);
-            }
-        }
-        
-        // --- СБРОС ---
-        function resetGame() {
-            foundClues = 0;
-            sanity = 100;
-            gameActive = true;
-            controls.getObject().position.set(0, 0.85, 0);
-            ghost.position.set(6, 0.4, 5);
-            // Сброс улик
-            clues.forEach(clue => {
-                if(clue.taken) {
-                    scene.add(clue.group);
-                    scene.add(clue.label);
-                    clue.taken = false;
-                }
-            });
-            updateUI();
-            showMessage("🔄 ВЫ НАЧИНАЕТЕ ЗАНОВО. БУДЬТЕ ОСТОРОЖНЫ...", false);
-        }
-        
-        document.getElementById('resetBtn').addEventListener('click', resetGame);
         
         // --- АНИМАЦИЯ ---
         let lastTime = performance.now();
@@ -523,28 +232,24 @@
             lastTime = now;
             
             updateMovement(delta);
-            updateGhost(delta);
             
-            // Свет факела следует за игроком
-            torchLight.position.copy(controls.getObject().position);
-            torchLight.position.y += 0.5;
+            // Маленькая анимация света
+            fillLight.intensity = 0.5 + Math.sin(Date.now() * 0.003) * 0.2;
             
             renderer.render(scene, camera);
-            labelRenderer.render(scene, camera);
             requestAnimationFrame(animate);
         }
         
-        updateUI();
         animate();
         
+        // Адаптация под размер окна
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-            labelRenderer.setSize(window.innerWidth, window.innerHeight);
         });
         
-        console.log('👻 "Шёпот в темноте" запущен! Найдите 6 улик, избегая призрака.');
+        console.log('✅ Игра загружена! КЛИКНИТЕ по экрану и нажмите W/A/S/D');
     </script>
 </body>
 </html>
