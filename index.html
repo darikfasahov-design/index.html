@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>ТЕНЬ В ЛАБИРИНТЕ | Психологический хоррор от первого лица</title>
+    <title>ТЕНЬ В ЛАБИРИНТЕ | Хоррор от первого лица</title>
     <style>
         body {
             margin: 0;
             overflow: hidden;
             font-family: 'Courier New', monospace;
-            user-select: none;
         }
-        /* Интерфейс */
         #ui {
             position: absolute;
             top: 20px;
@@ -27,7 +25,6 @@
             font-family: monospace;
             pointer-events: none;
             font-size: 14px;
-            letter-spacing: 1px;
         }
         #objective {
             position: absolute;
@@ -43,7 +40,6 @@
             text-align: right;
             pointer-events: none;
             z-index: 100;
-            backdrop-filter: blur(4px);
         }
         #crosshair {
             position: absolute;
@@ -70,7 +66,6 @@
             font-family: monospace;
             font-size: 1.4rem;
             font-weight: bold;
-            letter-spacing: 2px;
             pointer-events: none;
             z-index: 150;
             transition: 0.3s;
@@ -87,7 +82,6 @@
             border-radius: 20px;
             color: #888;
             font-size: 11px;
-            font-family: monospace;
             pointer-events: none;
             z-index: 100;
         }
@@ -127,43 +121,25 @@
         button:hover {
             background: #aa3333;
             color: black;
-            transform: scale(1.02);
         }
         @keyframes shake {
             0% { transform: translate(1px, 1px); }
-            10% { transform: translate(-1px, -2px); }
-            20% { transform: translate(-1px, 0px); }
-            30% { transform: translate(1px, 2px); }
-            40% { transform: translate(1px, -1px); }
-            50% { transform: translate(-1px, 1px); }
-            60% { transform: translate(-1px, 0px); }
-            70% { transform: translate(1px, 1px); }
-            80% { transform: translate(-1px, -1px); }
-            90% { transform: translate(1px, 1px); }
-            100% { transform: translate(0, 0); }
+            100% { transform: translate(-1px, -1px); }
         }
         .shake-effect {
-            animation: shake 0.2s ease-in-out 0s 2;
+            animation: shake 0.1s ease-in-out 0s 3;
         }
         .sanity-effect {
             filter: blur(2px) brightness(0.7);
-            transition: 0.1s;
         }
     </style>
 </head>
 <body>
-    <div id="ui">
-        🧠 [СОЗНАНИЕ РАЗРУШАЕТСЯ] ██░░ 35%
-    </div>
-    <div id="objective">
-        📜 ЗАДАНИЕ: Найти 5 страниц дневника<br>
-        🔍 Найдено: <span id="foundLogs">0</span> / 5
-    </div>
+    <div id="ui">🧠 [СОЗНАНИЕ РАЗРУШАЕТСЯ] ██░░ 35%</div>
+    <div id="objective">📜 ЗАДАНИЕ: Найти 5 страниц дневника<br>🔍 Найдено: <span id="foundLogs">0</span> / 5</div>
     <div id="crosshair"></div>
     <div id="message-area" style="opacity:0; visibility:hidden;"></div>
-    <div id="controls-hint">
-        🖱️ Мышь: осмотр | W/A/S/D: движение | SHIFT: бег | [E] - взять дневник
-    </div>
+    <div id="controls-hint">🖱️ Мышь: осмотр | W/A/S/D: движение | SHIFT: бег | [E] - взять дневник</div>
     <div id="health-bar"><div id="health-fill" style="width: 100%;"></div></div>
     <button id="resetBtn">💀 ПЕРЕРОДИТЬСЯ 💀</button>
 
@@ -181,16 +157,15 @@
         import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
         import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-        // --- ИНИЦИАЛИЗАЦИЯ СЦЕНЫ ---
+        // --- СЦЕНА ---
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x010108);
-        scene.fog = new THREE.FogExp2(0x010108, 0.02);
+        scene.fog = new THREE.FogExp2(0x010108, 0.025);
         
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.05, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(renderer.domElement);
         
         const labelRenderer = new CSS2DRenderer();
@@ -201,7 +176,7 @@
         labelRenderer.domElement.style.pointerEvents = 'none';
         document.body.appendChild(labelRenderer.domElement);
         
-        // --- УПРАВЛЕНИЕ С БЛОКИРОВКОЙ ---
+        // --- УПРАВЛЕНИЕ ---
         const controls = new PointerLockControls(camera, document.body);
         const blocker = document.createElement('div');
         blocker.style.position = 'absolute';
@@ -209,7 +184,7 @@
         blocker.style.left = '0';
         blocker.style.width = '100%';
         blocker.style.height = '100%';
-        blocker.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        blocker.style.backgroundColor = 'rgba(0,0,0,0.95)';
         blocker.style.zIndex = '1000';
         blocker.style.display = 'flex';
         blocker.style.justifyContent = 'center';
@@ -218,47 +193,39 @@
         blocker.style.color = '#ff6666';
         blocker.style.fontSize = '28px';
         blocker.style.flexDirection = 'column';
-        blocker.innerHTML = '🔴 КЛИКНИТЕ, ЧТОБЫ ВОЙТИ В ХОРРОР 🔴<br><span style="font-size:14px; margin-top:20px;">(Мышь заблокируется, ESC для освобождения)</span>';
+        blocker.innerHTML = '🔴 КЛИКНИТЕ, ЧТОБЫ ВОЙТИ 🔴<br><span style="font-size:14px; margin-top:20px;">(ESC для освобождения мыши)</span>';
         document.body.appendChild(blocker);
         
-        controls.getObject().position.set(0, 0.9, 0); // Рост игрока уменьшен
+        controls.getObject().position.set(0, 0.9, 0);
         scene.add(controls.getObject());
         
         controls.addEventListener('lock', () => { blocker.style.display = 'none'; });
         controls.addEventListener('unlock', () => { blocker.style.display = 'flex'; });
         
-        // --- ОСВЕЩЕНИЕ (ТРЕВОЖНОЕ)---
+        // --- ОСВЕЩЕНИЕ ---
         const ambient = new THREE.AmbientLight(0x111111);
         scene.add(ambient);
-        const flickerLight = new THREE.PointLight(0xff3300, 0.7, 18);
+        const flickerLight = new THREE.PointLight(0xff3300, 0.8, 18);
         flickerLight.position.set(0, 2, 0);
         scene.add(flickerLight);
-        const fillLight = new THREE.PointLight(0x2266aa, 0.3);
-        fillLight.position.set(-2, 1.5, -2);
-        scene.add(fillLight);
         
-        // --- ЛАБИРИНТ С КОЛЛИЗИЯМИ (СТЕНЫ)---
-        const wallMat = new THREE.MeshStandardMaterial({ color: 0x2a1a2a, roughness: 0.6, metalness: 0.1, emissive: 0x110011 });
-        // Определим стены как объекты с AABB
+        // --- СТЕНЫ С КОЛЛИЗИЕЙ ---
         const walls = [];
         function addWall(x, z, w, h, d) {
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0x2a1a2a, roughness: 0.6, metalness: 0.1 });
             const wall = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), wallMat);
             wall.position.set(x, h/2, z);
             wall.castShadow = true;
             wall.receiveShadow = true;
             scene.add(wall);
-            walls.push({
-                x: x - w/2, z: z - d/2,
-                width: w, depth: d,
-                x2: x + w/2, z2: z + d/2
-            });
+            walls.push({ x: x - w/2, z: z - d/2, x2: x + w/2, z2: z + d/2 });
         }
         // Внешние стены
         addWall(0, -10, 22, 3, 1);
         addWall(0, 10, 22, 3, 1);
         addWall(-11, 0, 1, 3, 22);
         addWall(11, 0, 1, 3, 22);
-        // Внутренние перегородки (лабиринт)
+        // Внутренние стены
         addWall(-5, -3, 1, 2.5, 5);
         addWall(3, -4, 1, 2.5, 4);
         addWall(-2, 2, 6, 2.5, 1);
@@ -268,65 +235,43 @@
         addWall(6, -6, 1, 2.5, 3);
         addWall(-7, 4, 3, 2.5, 1);
         
-        // Пол с текстурой крови
-        const floorMat = new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.8, metalness: 0.05 });
-        const floor = new THREE.Mesh(new THREE.PlaneGeometry(22, 22), floorMat);
+        // Пол
+        const floor = new THREE.Mesh(new THREE.PlaneGeometry(22, 22), new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.8 }));
         floor.rotation.x = -Math.PI/2;
         floor.position.y = -0.1;
         floor.receiveShadow = true;
         scene.add(floor);
         
-        // Декоративные серверы и свечи
-        const serverMat = new THREE.MeshStandardMaterial({ color: 0x331122, emissive: 0x220011 });
-        for(let i=0; i<30; i++) {
-            let x = (Math.random() - 0.5)*18;
-            let z = (Math.random() - 0.5)*16;
-            if(Math.abs(x)<2 && Math.abs(z)<2) continue;
-            const rack = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1.4, 0.5), serverMat);
-            rack.position.set(x, 0.6, z);
-            rack.castShadow = true;
-            scene.add(rack);
-        }
-        
-        // --- МОНСТР (ИИ) - МЕДЛЕННЫЙ, НО УЖАСНЫЙ---
-        const monsterGroup = new THREE.Group();
+        // --- МОНСТР ---
+        const monster = new THREE.Group();
         const body = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 20), new THREE.MeshStandardMaterial({ color: 0x330000, emissive: 0x220000, emissiveIntensity: 0.7 }));
-        monsterGroup.add(body);
+        monster.add(body);
         const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff2222 }));
         eyeL.position.set(-0.35, 0.2, 0.55);
-        monsterGroup.add(eyeL);
+        monster.add(eyeL);
         const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff2222 }));
         eyeR.position.set(0.35, 0.2, 0.55);
-        monsterGroup.add(eyeR);
-        monsterGroup.position.set(5, 0.45, 4);
-        scene.add(monsterGroup);
+        monster.add(eyeR);
+        monster.position.set(5, 0.45, 4);
+        scene.add(monster);
         
-        // Метка над монстром
-        const monsterDiv = document.createElement('div');
-        monsterDiv.textContent = '⚠️ [ИСКАЖЁННЫЙ] ⚠️';
-        monsterDiv.style.backgroundColor = 'rgba(0,0,0,0.7)';
-        monsterDiv.style.color = '#ff5555';
-        monsterDiv.style.padding = '2px 8px';
-        monsterDiv.style.borderRadius = '20px';
-        monsterDiv.style.fontSize = '10px';
-        monsterDiv.style.border = '1px solid red';
-        const monsterLabel = new CSS2DObject(monsterDiv);
-        monsterGroup.add(monsterLabel);
-        monsterLabel.position.set(0, 1.0, 0);
+        // --- ПРЕДМЕТЫ ---
+        let items = [];
+        let collected = 0;
+        let health = 100;
+        let gameActive = true;
+        let invincibleTimer = 0;
         
-        let monsterSpeed = 1.2; // Медленнее, страшнее
-        let monsterActive = true;
-        
-        // --- ПРЕДМЕТЫ: 5 ДНЕВНИКОВ---
-        class DiaryPage {
-            constructor(scene, pos, text) {
-                this.scene = scene;
-                this.group = new THREE.Group();
-                const paper = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.05, 0.35), new THREE.MeshStandardMaterial({ color: 0xccaa88, emissive: 0x442200 }));
-                paper.castShadow = true;
-                this.group.add(paper);
-                this.group.position.copy(pos);
-                scene.add(this.group);
+        function spawnItems() {
+            items.forEach(i => { scene.remove(i.group); scene.remove(i.label); });
+            items = [];
+            const positions = [[-3.5,0.1,-2], [4.2,0.1,1.5], [-1.5,0.1,5], [3,0.1,-3.5], [-4,0.1,3.2]];
+            for(let i=0; i<positions.length; i++) {
+                const group = new THREE.Group();
+                const paper = new THREE.Mesh(new THREE.BoxGeometry(0.45,0.05,0.35), new THREE.MeshStandardMaterial({ color: 0xccaa88 }));
+                group.add(paper);
+                group.position.set(positions[i][0], positions[i][1], positions[i][2]);
+                scene.add(group);
                 const div = document.createElement('div');
                 div.textContent = '📜 СТРАНИЦА';
                 div.style.backgroundColor = 'rgba(0,0,0,0.7)';
@@ -334,130 +279,95 @@
                 div.style.padding = '4px 8px';
                 div.style.borderRadius = '4px';
                 div.style.fontSize = '11px';
-                div.style.borderLeft = '2px solid red';
-                this.label = new CSS2DObject(div);
-                this.label.position.copy(pos);
-                this.label.position.y += 0.35;
-                scene.add(this.label);
-                this.text = text;
+                const label = new CSS2DObject(div);
+                label.position.copy(group.position);
+                label.position.y += 0.35;
+                scene.add(label);
+                items.push({ group, label });
             }
-            destroy() {
-                this.scene.remove(this.group);
-                this.scene.remove(this.label);
-            }
-        }
-        
-        let items = [];
-        let collected = 0;
-        let health = 100;
-        let gameActive = true;
-        let invincibleTimer = 0;
-        let respawnTimer = null;
-        let messageTimeout = null;
-        
-        const foundSpan = document.getElementById('foundLogs');
-        const healthFill = document.getElementById('health-fill');
-        const msgDiv = document.getElementById('message-area');
-        
-        function showMessage(msg, isDanger=false) {
-            if(messageTimeout) clearTimeout(messageTimeout);
-            msgDiv.style.visibility = 'visible';
-            msgDiv.style.opacity = '1';
-            msgDiv.innerHTML = msg;
-            msgDiv.style.color = isDanger ? '#ff5555' : '#ff9999';
-            msgDiv.style.borderTop = isDanger ? '3px solid red' : '1px solid #aa4444';
-            messageTimeout = setTimeout(() => {
-                msgDiv.style.opacity = '0';
-                setTimeout(() => msgDiv.style.visibility = 'hidden', 500);
-            }, 2800);
         }
         
         function updateUI() {
-            foundSpan.textContent = collected;
-            healthFill.style.width = Math.max(0, health) + '%';
+            document.getElementById('foundLogs').textContent = collected;
+            document.getElementById('health-fill').style.width = Math.max(0, health) + '%';
             if(health <= 0 && gameActive) {
                 gameActive = false;
-                showMessage('💀 ВАС ПОГЛОТИЛА ТЕНЬ... ПЕРЕРОЖДЕНИЕ... 💀', true);
-                if(controls.isLocked) controls.unlock();
-                if(respawnTimer) clearTimeout(respawnTimer);
-                respawnTimer = setTimeout(() => {
-                    // Воскрешение с сохранением прогресса
+                const msgDiv = document.getElementById('message-area');
+                msgDiv.style.visibility = 'visible';
+                msgDiv.style.opacity = '1';
+                msgDiv.innerHTML = '💀 ВАС ПОГЛОТИЛА ТЕНЬ... ПЕРЕРОЖДЕНИЕ... 💀';
+                setTimeout(() => {
                     health = 70;
                     collected = Math.max(0, collected - 1);
-                    if(collected < 0) collected = 0;
                     gameActive = true;
                     controls.getObject().position.set(0, 0.9, 0);
-                    monsterGroup.position.set(5, 0.45, 4);
+                    monster.position.set(5, 0.45, 4);
                     updateUI();
-                    showMessage('🔮 ВЫ ВОЗРОДИЛИСЬ... НО ТЕНЬ БЛИЗКО...', true);
-                    if(controls.isLocked === false) {
-                        blocker.style.display = 'flex';
-                    }
+                    document.getElementById('message-area').style.opacity = '0';
+                    setTimeout(() => document.getElementById('message-area').style.visibility = 'hidden', 500);
                 }, 2000);
             }
             if(collected >= 5 && gameActive) {
                 gameActive = false;
-                showMessage('🏆 ВЫ СОБРАЛИ ВСЕ СТРАНИЦЫ. ТЕНЬ ИСЧЕЗАЕТ... ПОБЕДА! 🏆', false);
-                if(controls.isLocked) controls.unlock();
+                const msgDiv = document.getElementById('message-area');
+                msgDiv.style.visibility = 'visible';
+                msgDiv.style.opacity = '1';
+                msgDiv.innerHTML = '🏆 ВЫ СОБРАЛИ ВСЕ СТРАНИЦЫ. ПОБЕДА! 🏆';
             }
         }
         
-        function spawnItems() {
-            items.forEach(i => i.destroy());
-            items = [];
-            const positions = [
-                [-3.5, 0.1, -2], [4.2, 0.1, 1.5], [-1.5, 0.1, 5], [3, 0.1, -3.5], [-4, 0.1, 3.2]
-            ];
-            const texts = ["Страница 1: Я заперт...", "Страница 2: Оно двигается.", "Страница 3: Кровь на стенах.", "Страница 4: Не смотри в глаза.", "Страница 5: Последний шанс..."];
-            for(let i=0; i<positions.length; i++) {
-                items.push(new DiaryPage(scene, new THREE.Vector3(positions[i][0], positions[i][1], positions[i][2]), texts[i]));
-            }
-        }
-        
-        // --- КОЛЛИЗИЯ СТЕН---
+        // --- КОЛЛИЗИЯ ---
         function checkCollision(pos) {
-            const radius = 0.35;
-            for(let wall of walls) {
-                if(pos.x + radius > wall.x && pos.x - radius < wall.x + wall.width &&
-                   pos.z + radius > wall.z && pos.z - radius < wall.z + wall.depth) {
-                    return true;
-                }
+            for(let w of walls) {
+                if(pos.x + 0.35 > w.x && pos.x - 0.35 < w.x2 && pos.z + 0.35 > w.z && pos.z - 0.35 < w.z2) return true;
             }
             return false;
         }
         
-        // --- ДВИЖЕНИЕ ОТНОСИТЕЛЬНО ВЗГЛЯДА ИГРОКА (ФИКСИРОВАНО)---
-        const moveState = { forward: false, back: false, left: false, right: false, shift: false };
+        // --- ДВИЖЕНИЕ (ИСПРАВЛЕНО) ---
+        const keys = { w: false, s: false, a: false, d: false, shift: false };
         window.addEventListener('keydown', (e) => {
             const k = e.key.toLowerCase();
-            if(k === 'w') moveState.forward = true;
-            if(k === 's') moveState.back = true;
-            if(k === 'a') moveState.left = true;
-            if(k === 'd') moveState.right = true;
-            if(k === 'shift') moveState.shift = true;
-            if(k === 'e') { e.preventDefault(); interact(); }
+            if(k === 'w') keys.w = true;
+            if(k === 's') keys.s = true;
+            if(k === 'a') keys.a = true;
+            if(k === 'd') keys.d = true;
+            if(k === 'shift') keys.shift = true;
+            if(k === 'e') {
+                e.preventDefault();
+                const playerPos = controls.getObject().position;
+                for(let i=0; i<items.length; i++) {
+                    if(playerPos.distanceTo(items[i].group.position) < 1.1) {
+                        scene.remove(items[i].group);
+                        scene.remove(items[i].label);
+                        items.splice(i,1);
+                        collected++;
+                        updateUI();
+                        break;
+                    }
+                }
+            }
             if(k === 'escape' && controls.isLocked) controls.unlock();
-            if(['w','s','a','d','arrowup','arrowdown','arrowleft','arrowright','shift'].includes(k)) e.preventDefault();
         });
         window.addEventListener('keyup', (e) => {
             const k = e.key.toLowerCase();
-            if(k === 'w') moveState.forward = false;
-            if(k === 's') moveState.back = false;
-            if(k === 'a') moveState.left = false;
-            if(k === 'd') moveState.right = false;
-            if(k === 'shift') moveState.shift = false;
+            if(k === 'w') keys.w = false;
+            if(k === 's') keys.s = false;
+            if(k === 'a') keys.a = false;
+            if(k === 'd') keys.d = false;
+            if(k === 'shift') keys.shift = false;
         });
         
         function updateMovement(delta) {
             if(!controls.isLocked || !gameActive) return;
-            let speed = (moveState.shift ? 3.8 : 2.4) * delta;
+            let speed = (keys.shift ? 4.0 : 2.5) * delta;
             const cameraDir = controls.getDirection(new THREE.Vector3());
             const right = new THREE.Vector3().crossVectors(new THREE.Vector3(0,1,0), cameraDir).normalize();
             let move = new THREE.Vector3();
-            if(moveState.forward) move.add(cameraDir);
-            if(moveState.back) move.sub(cameraDir);
-            if(moveState.right) move.add(right);
-            if(moveState.left) move.sub(right);
+            if(keys.w) move.add(cameraDir);
+            if(keys.s) move.sub(cameraDir);
+            if(keys.d) move.add(right);
+            if(keys.a) move.sub(right);
             move.y = 0;
             if(move.length() > 0) move.normalize();
             let newPos = controls.getObject().position.clone();
@@ -466,7 +376,6 @@
             if(!checkCollision(newPos)) {
                 controls.getObject().position.copy(newPos);
             } else {
-                // Попытка движения по X и Z отдельно
                 let tryX = controls.getObject().position.clone();
                 tryX.x += move.x * speed;
                 if(!checkCollision(tryX)) controls.getObject().position.x = tryX.x;
@@ -476,150 +385,69 @@
             }
         }
         
-        function interact() {
+        // --- МОНСТР ПРЕСЛЕДУЕТ ---
+        function updateMonster(delta) {
             if(!gameActive) return;
             const playerPos = controls.getObject().position;
-            for(let i=0; i<items.length; i++) {
-                const dist = playerPos.distanceTo(items[i].group.position);
-                if(dist < 1.1) {
-                    collected++;
-                    updateUI();
-                    showMessage(`📖 Найдена страница (${collected}/5). Голоса становятся громче...`, false);
-                    items[i].destroy();
-                    items.splice(i,1);
-                    break;
-                }
-            }
-        }
-        
-        // --- ЛОГИКА ИИ: МЕДЛЕННО ПРЕСЛЕДУЕТ, НО СТРАШНО---
-        let lastMonsterAttack = 0;
-        function updateMonster(delta) {
-            if(!gameActive || !monsterActive) return;
-            const playerPos = controls.getObject().position;
-            const toPlayer = new THREE.Vector3().subVectors(playerPos, monsterGroup.position);
+            const toPlayer = new THREE.Vector3().subVectors(playerPos, monster.position);
             const dist = toPlayer.length();
-            let speed = monsterSpeed * delta;
+            let speed = 1.3 * delta;
             if(dist > 0.9) {
                 const dir = toPlayer.clone().normalize();
-                let newX = monsterGroup.position.x + dir.x * speed;
-                let newZ = monsterGroup.position.z + dir.z * speed;
-                // Ограничения по стенам для монстра
-                let monPos = { x: newX, z: newZ };
-                let collides = false;
-                for(let wall of walls) {
-                    if(monPos.x + 0.5 > wall.x && monPos.x - 0.5 < wall.x+wall.width &&
-                       monPos.z + 0.5 > wall.z && monPos.z - 0.5 < wall.z+wall.depth) collides=true;
-                }
-                if(!collides) {
-                    monsterGroup.position.x = newX;
-                    monsterGroup.position.z = newZ;
-                }
+                let newX = monster.position.x + dir.x * speed;
+                let newZ = monster.position.z + dir.z * speed;
+                monster.position.x = newX;
+                monster.position.z = newZ;
             }
-            monsterGroup.lookAt(playerPos);
-            // Атака с кулдауном
-            if(dist < 1.2 && gameActive && health>0 && invincibleTimer <= 0) {
+            monster.lookAt(playerPos);
+            if(dist < 1.2 && gameActive && health > 0 && invincibleTimer <= 0) {
                 health -= 14;
                 updateUI();
-                showMessage('💀 ТЕНЬ КОСНУЛАСЬ ТЕБЯ! 💀', true);
                 document.body.classList.add('shake-effect');
-                setTimeout(()=> document.body.classList.remove('shake-effect'), 300);
+                setTimeout(() => document.body.classList.remove('shake-effect'), 300);
                 const pushDir = toPlayer.clone().normalize();
-                let newX = controls.getObject().position.x + pushDir.x * 1.4;
-                let newZ = controls.getObject().position.z + pushDir.z * 1.4;
-                if(!checkCollision({x:newX, z:newZ})) {
-                    controls.getObject().position.x = newX;
-                    controls.getObject().position.z = newZ;
-                }
-                invincibleTimer = 0.9;
-                if(health <= 0) gameActive = false;
+                controls.getObject().position.x += pushDir.x * 1.2;
+                controls.getObject().position.z += pushDir.z * 1.2;
+                invincibleTimer = 0.8;
             }
             if(invincibleTimer > 0) invincibleTimer -= delta;
-            // Визуальный эффект монстра при низком здоровье
-            if(health < 40) {
-                monsterSpeed = 1.5;
-                const intens = 1.2 + Math.random()*0.8;
-                flickerLight.intensity = intens;
-                monsterGroup.children[0].material.emissiveIntensity = 1.0;
-            } else {
-                monsterSpeed = 1.1;
-            }
+            flickerLight.intensity = 0.5 + Math.sin(Date.now() * 0.015) * 0.3 + Math.random() * 0.2;
         }
         
-        // --- ЭФФЕКТЫ СТРАХА: ШЕПОТ, ИСКАЖЕНИЕ---
-        let whisperTimer = 0;
-        function updateHorror(delta) {
-            if(!gameActive) return;
-            whisperTimer += delta;
-            if(whisperTimer > 6.0) {
-                whisperTimer = 0;
-                const r = Math.random();
-                if(r<0.35) showMessage("👁️ \"Ты не выйдешь...\"", false);
-                else if(r<0.7) showMessage("📢 Шёпот: \"Она смотрит...\"", false);
-                else showMessage("🌑 \"Тень ближе, чем кажется\"", false);
-            }
-            if(health < 35) {
-                document.body.classList.add('sanity-effect');
-                flickerLight.intensity = 0.5 + Math.random() * 1.2;
-            } else {
-                document.body.classList.remove('sanity-effect');
-            }
-            // Мерцание лампы
-            flickerLight.intensity = 0.5 + Math.sin(Date.now() * 0.012) * 0.3 + Math.random() * 0.2;
-        }
-        
-        // --- ПЕРЕРОЖДЕНИЕ (СБРОС)---
-        function resetGame() {
-            if(respawnTimer) clearTimeout(respawnTimer);
+        // --- СБРОС ---
+        document.getElementById('resetBtn').addEventListener('click', () => {
             collected = 0;
             health = 100;
             gameActive = true;
-            invincibleTimer = 0;
             controls.getObject().position.set(0, 0.9, 0);
-            monsterGroup.position.set(5, 0.45, 4);
+            monster.position.set(5, 0.45, 4);
             spawnItems();
             updateUI();
-            showMessage("🔁 ПЕРЕРОЖДЕНИЕ... ВЫ СНОВА В ЛАБИРИНТЕ. НЕ ДОВЕРЯЙТЕ ТЕНИ.", false);
-            if(!controls.isLocked) blocker.style.display = 'flex';
-        }
+        });
         
-        // --- АНИМАЦИЯ И ЦИКЛ---
+        // --- АНИМАЦИЯ ---
         let lastTime = performance.now();
         function animate() {
             const now = performance.now();
-            let delta = Math.min(0.033, (now-lastTime)/1000);
+            let delta = Math.min(0.033, (now - lastTime) / 1000);
             lastTime = now;
-            
             updateMovement(delta);
-            if(gameActive) updateMonster(delta);
-            updateHorror(delta);
-            
-            // Обновление метки монстра
-            monsterLabel.position.copy(monsterGroup.position);
-            monsterLabel.position.y += 1.0;
-            
+            updateMonster(delta);
             renderer.render(scene, camera);
             labelRenderer.render(scene, camera);
             requestAnimationFrame(animate);
         }
         
-        function init() {
-            spawnItems();
-            updateUI();
-            animate();
-            blocker.addEventListener('click', () => controls.lock());
-        }
-        
-        document.getElementById('resetBtn').addEventListener('click', resetGame);
+        spawnItems();
+        updateUI();
+        animate();
+        blocker.addEventListener('click', () => controls.lock());
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
             labelRenderer.setSize(window.innerWidth, window.innerHeight);
         });
-        
-        init();
-        console.log('🔥 ХОРРОР АКТИВИРОВАН. Ищите страницы, избегайте ТЕНИ.');
     </script>
 </body>
 </html>
